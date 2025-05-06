@@ -1,0 +1,22 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  height: 100vh;
+}
+
+.leftPanel {
+  background: #f5f5f5;
+  border-right: 1px solid #ddd;
+  padding: 16px;
+}
+
+.canvas {
+  background: #fff;
+  padding: 16px;
+}
+
+.rightPanel {
+  background: #fafafa;
+  border-left: 1px solid #ddd;
+  padding: 16px;
+}
