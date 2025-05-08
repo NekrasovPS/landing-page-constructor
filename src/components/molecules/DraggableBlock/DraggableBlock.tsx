@@ -1,6 +1,10 @@
 import { useDraggable } from "@dnd-kit/core";
 
-function DraggableBlock({ id }: { id: string }) {
+interface DraggableBlockProps {
+  id: string;
+}
+
+export default function DraggableBlock({ id }: DraggableBlockProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
   });
@@ -19,16 +23,6 @@ function DraggableBlock({ id }: { id: string }) {
       }}
     >
       {id}
-    </div>
-  );
-}
-
-export default function BlocksPanel() {
-  return (
-    <div>
-      <DraggableBlock id="block-1" />
-      <DraggableBlock id="block-2" />
-      <DraggableBlock id="block-3" />
     </div>
   );
 }

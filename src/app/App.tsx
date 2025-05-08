@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import EditorPage from "../pages/EditorPage/EditorPage";
+import EditorPage from "../components/pages/EditorPage/EditorPage";
 
 export default function App() {
   return (

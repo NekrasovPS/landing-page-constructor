@@ -1,11 +1,12 @@
-import styles from "./EditorPage.module.css";
-import BlocksPanel from "../../widgets/BlocksPanel/BlocksPanel";
-import Canvas from "../../widgets/Canvas/Canvas";
-import EditPanel from "../../widgets/EditPanel/EditPanel";
+import BlocksPanel from "../../organisms/BlocksPanel/BlocksPanel";
+import Canvas from "../../templates/Canvas/Canvas";
+import EditPanel from "../../organisms/EditPanel/EditPanel";
 
 import { DndContext } from "@dnd-kit/core";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useState } from "react";
+
+import styles from "./EditorPage.module.css";
 
 export default function EditorPage() {
   const [blocks, setBlocks] = useState<string[]>([]);
