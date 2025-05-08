@@ -1,20 +1,24 @@
+import styles from "./EditorPage.module.css";
 import BlocksPanel from "../../organisms/BlocksPanel/BlocksPanel";
 import Canvas from "../../templates/Canvas/Canvas";
 import EditPanel from "../../organisms/EditPanel/EditPanel";
-
 import { DndContext } from "@dnd-kit/core";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useState } from "react";
 
-import styles from "./EditorPage.module.css";
+interface BlockData {
+  type: string;
+  variant: string;
+}
 
 export default function EditorPage() {
-  const [blocks, setBlocks] = useState<string[]>([]);
+  const [blocks, setBlocks] = useState<BlockData[]>([]);
 
   const handleDrop = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over?.id === "canvas") {
-      setBlocks((prev) => [...prev, String(active.id)]);
+      const blockData = active.data.current as BlockData;
+      setBlocks((prev) => [...prev, blockData]);
     }
   };
 

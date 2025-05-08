@@ -2,11 +2,16 @@ import { useDraggable } from "@dnd-kit/core";
 
 interface DraggableBlockProps {
   id: string;
+  data: {
+    type: string;
+    variant: string;
+  };
 }
 
-export default function DraggableBlock({ id }: DraggableBlockProps) {
+export default function DraggableBlock({ id, data }: DraggableBlockProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
+    data,
   });
 
   return (

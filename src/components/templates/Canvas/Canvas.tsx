@@ -1,7 +1,12 @@
 import DroppableCanvas from "../../organisms/DroppableCanvas/DroppableCanvas";
 
+interface BlockData {
+  type: string;
+  variant: string;
+}
+
 interface CanvasProps {
-  blocks: string[];
+  blocks: BlockData[];
 }
 
 export default function Canvas({ blocks }: CanvasProps) {

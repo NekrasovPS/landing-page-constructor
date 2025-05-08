@@ -1,8 +1,13 @@
 import { useDroppable } from "@dnd-kit/core";
 import { blockMap } from "../../../utils/blockMap";
 
+interface BlockData {
+  type: string;
+  variant: string;
+}
+
 interface DroppableCanvasProps {
-  blocks: string[];
+  blocks: BlockData[];
 }
 
 export default function DroppableCanvas({ blocks }: DroppableCanvasProps) {
@@ -19,14 +24,9 @@ export default function DroppableCanvas({ blocks }: DroppableCanvasProps) {
       }}
     >
       <p>Перетащи блок сюда</p>
-      {blocks.map((blockId, index) => {
-        const BlockComponent = blockMap[blockId];
-        if (!BlockComponent) return null;
-        return (
-          <div key={`${blockId}-${index}`} style={{ marginBottom: "16px" }}>
-            <BlockComponent />
-          </div>
-        );
+      {blocks.map((block, index) => {
+        const Component = blockMap[block.variant];
+        return Component ? <Component key={index} /> : null;
       })}
     </div>
   );
