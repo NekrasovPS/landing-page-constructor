@@ -5,9 +5,7 @@ import DraggableBlock from "../../../molecules/DraggableBlock/DraggableBlock";
 export default function HeaderBlockGroup() {
   return (
     <BlockGroupWrapper title="Header Blocks">
-      <DraggableBlock id="header-1" />
-      <DraggableBlock id="header-2" />
-      <DraggableBlock id="header-3" />
+      <DraggableBlock id="header-1" data={{ type: "header", variant: "header-1" }} />
     </BlockGroupWrapper>
   );
 }

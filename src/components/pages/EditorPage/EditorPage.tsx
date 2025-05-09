@@ -1,10 +1,11 @@
-import styles from "./EditorPage.module.css";
 import BlocksPanel from "../../organisms/BlocksPanel/BlocksPanel";
 import Canvas from "../../templates/Canvas/Canvas";
 import EditPanel from "../../organisms/EditPanel/EditPanel";
 import { DndContext } from "@dnd-kit/core";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useState } from "react";
+
+import styles from "./EditorPage.module.css";
 
 interface BlockData {
   type: string;
