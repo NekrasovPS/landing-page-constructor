@@ -1,4 +1,3 @@
-// src/components/organisms/BlocksPanel/BlockGroups/HeaderBlockGroup.tsx
 import BlockGroupWrapper from "../../../molecules/BlockGroupWrapper/BlockGroupWrapper";
 import DraggableBlock from "../../../molecules/DraggableBlock/DraggableBlock";
 

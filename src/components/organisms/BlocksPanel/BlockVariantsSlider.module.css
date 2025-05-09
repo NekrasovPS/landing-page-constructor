@@ -1,0 +1,27 @@
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  padding: 16px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.closed {
+  transform: translateX(-100%);
+}
+
+.open {
+  transform: translateX(0);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
