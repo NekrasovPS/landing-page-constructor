@@ -1,11 +1,8 @@
 import HeroBlock from "../components/organisms/HeroBlock/HeroBlock";
 import FeatureBlock from "../components/organisms/FeatureBlock/FeatureBlock";
-import Header from "../components/organisms/Header/Header";
-import Button from "../components/organisms/Button/Button";
+import type { BlockProps } from "../type/blocks";
 
-export const blockMap: Record<string, React.FC> = {
+export const blockMap: Record<string, React.FC<BlockProps>> = {
   "hero-1": HeroBlock,
   "feature-1": FeatureBlock,
-  "header-1": Header,
-  "button-1": Button,
 };

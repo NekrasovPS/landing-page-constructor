@@ -1,14 +1,30 @@
-export default function HeroBlock() {
-    return (
-      <section style={{
-        padding: "40px",
-        background: "#f5f5f5",
-        textAlign: "center",
-        borderRadius: "8px",
-      }}>
-        <h1 style={{ fontSize: "32px", marginBottom: "16px" }}>Заголовок Hero</h1>
-        <p style={{ fontSize: "18px", color: "#666" }}>Описание блока Hero с призывом к действию.</p>
-      </section>
-    );
-  }
-  
+import styles from "./HeroBlock.module.css";
+
+interface HeroBlockProps {
+  backgroundImage?: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+}
+
+export default function HeroBlock({
+  backgroundImage = "https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg?semt=ais_hybrid&w=740",
+  title = "Добро пожаловать",
+  description = "Создавайте лендинги легко и быстро",
+  buttonText = "Начать",
+}: HeroBlockProps) {
+  return (
+    <section
+      className={styles.hero}
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <div className={styles.overlay}>
+        <div className={styles.content}>
+          <h1 className={styles.title}>{title}</h1>
+          <p className={styles.description}>{description}</p>
+          <button className={styles.button}>{buttonText}</button>
+        </div>
+      </div>
+    </section>
+  );
+}
