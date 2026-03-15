@@ -1,18 +1,12 @@
 import styles from "./HeroBlock.module.css";
-
-interface HeroBlockProps {
-  backgroundImage?: string;
-  title?: string;
-  description?: string;
-  buttonText?: string;
-}
+import type { BlockProps } from "../../../type/blocks";
 
 export default function HeroBlock({
-  backgroundImage = "https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg?semt=ais_hybrid&w=740",
+  backgroundImage = "",
   title = "Добро пожаловать",
   description = "Создавайте лендинги легко и быстро",
   buttonText = "Начать",
-}: HeroBlockProps) {
+}: BlockProps) {
   return (
     <section
       className={styles.hero}

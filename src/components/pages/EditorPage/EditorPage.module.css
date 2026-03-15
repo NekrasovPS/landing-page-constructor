@@ -1,24 +1,111 @@
-.wrapper {
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
+.editorLayout {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
 }
 
-.leftPanel {
-  width: 260px; /* фиксируем ширину */
-  position: relative;
-  height: 100%;
-  background: #f5f5f5;
-  border-right: 1px solid #ddd;
+.editorBody {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr var(--panel-width);
+  flex: 1;
+  overflow: hidden;
 }
 
-.canvas {
-  background: #fff;
-  padding: 16px;
+.sidebar {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
 }
 
-.rightPanel {
-  background: #fafafa;
-  border-left: 1px solid #ddd;
-  padding: 16px;
+.canvasArea {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-bg-tertiary);
+}
+
+.canvasWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.panel {
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panelTabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tab:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.tab.active {
+  color: var(--color-primary-600);
+  background: var(--color-bg-primary);
+  border-bottom-color: var(--color-primary-500);
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .editorBody {
+    grid-template-columns: 260px 1fr 300px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .editorBody {
+    grid-template-columns: 260px 1fr;
+  }
+
+  .panel {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .editorBody {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
 }

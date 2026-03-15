@@ -1,0 +1,70 @@
+.canvas {
+  min-height: 400px;
+  padding: var(--spacing-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  transition: background-color var(--transition-fast);
+}
+
+.canvas.dropOver {
+  background-color: var(--color-primary-50);
+  outline: 2px dashed var(--color-primary-400);
+  outline-offset: 2px;
+}
+
+.blockWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+}
+
+.blockWrapper.selected {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+}
+
+.blockWrapper:hover {
+  border-color: var(--color-primary-300);
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  color: var(--color-gray-400);
+  cursor: grab;
+  user-select: none;
+  font-size: var(--font-size-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.dragHandle:hover {
+  color: var(--color-primary-600);
+  background: var(--color-primary-100);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.blockContent {
+  flex: 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Sorting state */
+.blockWrapper[style*="transform"] {
+  z-index: 100;
+}

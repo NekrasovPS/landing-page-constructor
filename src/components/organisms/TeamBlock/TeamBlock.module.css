@@ -1,0 +1,114 @@
+.team {
+  padding: var(--spacing-20) var(--spacing-8);
+  background: var(--color-surface);
+}
+
+.team .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.team .header {
+  text-align: center;
+  margin-bottom: var(--spacing-16);
+}
+
+.team .title {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.team .subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
+.team .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-8);
+}
+
+.team .card {
+  text-align: center;
+  padding: var(--spacing-8);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-2xl);
+  transition: all var(--transition-normal);
+}
+
+.team .card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+}
+
+.team .avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--spacing-6);
+  background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-5xl);
+  overflow: hidden;
+}
+
+.team .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team .name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.team .role {
+  font-size: var(--font-size-base);
+  color: var(--color-primary-600);
+  margin-bottom: var(--spacing-4);
+}
+
+.team .bio {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-6);
+}
+
+.team .socials {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-3);
+}
+
+.team .socialLink {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-lg);
+  transition: all var(--transition-fast);
+}
+
+.team .socialLink:hover {
+  background: var(--color-primary-500);
+  color: white;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .team .grid {
+    grid-template-columns: 1fr;
+  }
+}

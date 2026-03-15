@@ -1,0 +1,16 @@
+export const galleryEditableFields = [
+  { name: "title", label: "Заголовок", type: "text" },
+  { name: "subtitle", label: "Подзаголовок", type: "text" },
+  { name: "image1", label: "Изображение 1 (URL)", type: "text" },
+  { name: "caption1", label: "Подпись 1", type: "text" },
+  { name: "image2", label: "Изображение 2 (URL)", type: "text" },
+  { name: "caption2", label: "Подпись 2", type: "text" },
+  { name: "image3", label: "Изображение 3 (URL)", type: "text" },
+  { name: "caption3", label: "Подпись 3", type: "text" },
+  { name: "image4", label: "Изображение 4 (URL)", type: "text" },
+  { name: "caption4", label: "Подпись 4", type: "text" },
+  { name: "image5", label: "Изображение 5 (URL)", type: "text" },
+  { name: "caption5", label: "Подпись 5", type: "text" },
+  { name: "image6", label: "Изображение 6 (URL)", type: "text" },
+  { name: "caption6", label: "Подпись 6", type: "text" },
+];

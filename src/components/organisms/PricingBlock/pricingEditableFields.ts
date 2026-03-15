@@ -1,0 +1,17 @@
+export const pricingEditableFields = [
+  { name: "title", label: "Заголовок", type: "text" },
+  { name: "subtitle", label: "Подзаголовок", type: "text" },
+  { name: "plan1Name", label: "Название плана 1", type: "text" },
+  { name: "plan1Price", label: "Цена плана 1", type: "text" },
+  { name: "plan1Features", label: "Функции плана 1", type: "text" },
+  { name: "plan1ButtonText", label: "Текст кнопки 1", type: "text" },
+  { name: "plan2Name", label: "Название плана 2", type: "text" },
+  { name: "plan2Price", label: "Цена плана 2", type: "text" },
+  { name: "plan2Features", label: "Функции плана 2", type: "text" },
+  { name: "plan2ButtonText", label: "Текст кнопки 2", type: "text" },
+  { name: "plan2Featured", label: "Популярный (true/false)", type: "text" },
+  { name: "plan3Name", label: "Название плана 3", type: "text" },
+  { name: "plan3Price", label: "Цена плана 3", type: "text" },
+  { name: "plan3Features", label: "Функции плана 3", type: "text" },
+  { name: "plan3ButtonText", label: "Текст кнопки 3", type: "text" },
+];

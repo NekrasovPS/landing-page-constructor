@@ -1,0 +1,26 @@
+.canvasContainer {
+  width: 100%;
+  transition: transform var(--transition-normal);
+}
+
+.canvas {
+  width: 100%;
+  min-height: 800px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  overflow: hidden;
+  transition: max-width var(--transition-normal);
+}
+
+.canvas[data-device="desktop"] {
+  max-width: 1200px;
+}
+
+.canvas[data-device="tablet"] {
+  max-width: 768px;
+}
+
+.canvas[data-device="mobile"] {
+  max-width: 375px;
+}

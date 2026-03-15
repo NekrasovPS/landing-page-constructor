@@ -1,14 +1,22 @@
 import { useDraggable } from "@dnd-kit/core";
+import styles from "./DraggableBlock.module.css";
 
 interface DraggableBlockProps {
   id: string;
+  label: string;
+  icon?: string;
   data: {
     type: string;
     variant: string;
   };
 }
 
-export default function DraggableBlock({ id, data }: DraggableBlockProps) {
+export default function DraggableBlock({
+  id,
+  label,
+  icon = "📦",
+  data,
+}: DraggableBlockProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
     data,
@@ -17,17 +25,12 @@ export default function DraggableBlock({ id, data }: DraggableBlockProps) {
   return (
     <div
       ref={setNodeRef}
+      className={`${styles.block} ${isDragging ? styles.dragging : ""}`}
       {...listeners}
       {...attributes}
-      style={{
-        padding: "12px",
-        marginBottom: "10px",
-        border: "1px solid #333",
-        background: isDragging ? "#ddd" : "#fff",
-        cursor: "grab",
-      }}
     >
-      {id}
+      <span className={styles.icon}>{icon}</span>
+      <span className={styles.label}>{label}</span>
     </div>
   );
 }
