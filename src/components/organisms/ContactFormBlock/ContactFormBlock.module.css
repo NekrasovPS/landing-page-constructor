@@ -1,0 +1,89 @@
+.contact {
+  padding: var(--spacing-20) var(--spacing-8);
+  background: var(--color-bg-secondary);
+}
+
+.contact .container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact .title {
+  text-align: center;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.contact .description {
+  text-align: center;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-12);
+}
+
+.contact .form {
+  background: var(--color-surface);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.contact .field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.contact .label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.contact .input,
+.contact .textarea {
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+}
+
+.contact .input:focus,
+.contact .textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+  background: var(--color-bg-primary);
+}
+
+.contact .textarea {
+  min-height: 150px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.contact .button {
+  padding: var(--spacing-4) var(--spacing-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: white;
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.contact .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}

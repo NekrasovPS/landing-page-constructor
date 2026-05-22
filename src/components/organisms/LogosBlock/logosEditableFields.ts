@@ -1,0 +1,15 @@
+export const logosEditableFields = [
+  { name: "title", label: "Заголовок", type: "text" },
+  { name: "logo1", label: "Логотип 1", type: "text" },
+  { name: "logo2", label: "Логотип 2", type: "text" },
+  { name: "logo3", label: "Логотип 3", type: "text" },
+  { name: "logo4", label: "Логотип 4", type: "text" },
+  { name: "logo5", label: "Логотип 5", type: "text" },
+  { name: "logo6", label: "Логотип 6", type: "text" },
+  { name: "logo7", label: "Логотип 7", type: "text" },
+  { name: "logo8", label: "Логотип 8", type: "text" },
+  { name: "logo9", label: "Логотип 9", type: "text" },
+  { name: "logo10", label: "Логотип 10", type: "text" },
+  { name: "logo11", label: "Логотип 11", type: "text" },
+  { name: "logo12", label: "Логотип 12", type: "text" },
+];

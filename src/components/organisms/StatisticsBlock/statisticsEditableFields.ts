@@ -1,0 +1,18 @@
+export const statisticsEditableFields = [
+  { name: "stat1Icon", label: "Иконка 1", type: "text" },
+  { name: "stat1Number", label: "Число 1", type: "text" },
+  { name: "stat1Label", label: "Название 1", type: "text" },
+  { name: "stat1Description", label: "Описание 1", type: "text" },
+  { name: "stat2Icon", label: "Иконка 2", type: "text" },
+  { name: "stat2Number", label: "Число 2", type: "text" },
+  { name: "stat2Label", label: "Название 2", type: "text" },
+  { name: "stat2Description", label: "Описание 2", type: "text" },
+  { name: "stat3Icon", label: "Иконка 3", type: "text" },
+  { name: "stat3Number", label: "Число 3", type: "text" },
+  { name: "stat3Label", label: "Название 3", type: "text" },
+  { name: "stat3Description", label: "Описание 3", type: "text" },
+  { name: "stat4Icon", label: "Иконка 4", type: "text" },
+  { name: "stat4Number", label: "Число 4", type: "text" },
+  { name: "stat4Label", label: "Название 4", type: "text" },
+  { name: "stat4Description", label: "Описание 4", type: "text" },
+];

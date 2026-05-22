@@ -1,0 +1,96 @@
+.hero7 {
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: var(--spacing-8);
+}
+
+.hero7 .container {
+  max-width: 800px;
+  text-align: center;
+}
+
+.hero7 .logo {
+  font-size: var(--font-size-6xl);
+  margin-bottom: var(--spacing-8);
+  display: block;
+}
+
+.hero7 .title {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-light);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-4);
+  letter-spacing: -0.03em;
+  line-height: var(--line-height-tight);
+}
+
+.hero7 .title strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.hero7 .description {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-8);
+  line-height: var(--line-height-relaxed);
+}
+
+.hero7 .emailForm {
+  display: flex;
+  max-width: 450px;
+  margin: 0 auto;
+  gap: var(--spacing-3);
+}
+
+.hero7 .input {
+  flex: 1;
+  padding: var(--spacing-4) var(--spacing-6);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-secondary);
+  transition: all var(--transition-fast);
+}
+
+.hero7 .input:focus {
+  outline: none;
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+  background: var(--color-bg-primary);
+}
+
+.hero7 .btn {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-text-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hero7 .btn:hover {
+  background: var(--color-gray-700);
+  transform: translateY(-2px);
+}
+
+.hero7 .note {
+  margin-top: var(--spacing-6);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 640px) {
+  .hero7 .emailForm {
+    flex-direction: column;
+  }
+
+  .hero7 .title {
+    font-size: var(--font-size-3xl);
+  }
+}

@@ -1,0 +1,15 @@
+export const hero10EditableFields = [
+  { name: "icon", label: "Иконка (эмодзи)", type: "text" },
+  { name: "title", label: "Заголовок", type: "text" },
+  { name: "description", label: "Описание", type: "text" },
+  { name: "card1Icon", label: "Иконка карточки 1", type: "text" },
+  { name: "card1Title", label: "Название карточки 1", type: "text" },
+  { name: "card1Description", label: "Описание карточки 1", type: "text" },
+  { name: "card2Icon", label: "Иконка карточки 2", type: "text" },
+  { name: "card2Title", label: "Название карточки 2", type: "text" },
+  { name: "card2Description", label: "Описание карточки 2", type: "text" },
+  { name: "card3Icon", label: "Иконка карточки 3", type: "text" },
+  { name: "card3Title", label: "Название карточки 3", type: "text" },
+  { name: "card3Description", label: "Описание карточки 3", type: "text" },
+  { name: "buttonText", label: "Текст кнопки", type: "text" },
+];
