@@ -8,10 +8,10 @@ import {
 } from "../store/slices/blocksSlice";
 import { push as pushHistory } from "../store/slices/historySlice";
 import { useToast } from "../contexts/ToastProvider";
-import type { BlockProps } from "../type/blocks";
+import type { BlockData, BlockProps } from "../type/blocks";
 
 interface UseBlockActionsOptions {
-  blocks: any[];
+  blocks: BlockData[];
   selectedIndex: number | null;
 }
 
@@ -23,13 +23,14 @@ export function useBlockActions({ blocks, selectedIndex }: UseBlockActionsOption
   const dispatch = useAppDispatch();
   const toast = useToast();
 
-  const deleteBlock = () => {
-    if (selectedIndex === null) {
+  const deleteBlock = (explicitIndex?: number) => {
+    const indexToDelete = explicitIndex ?? selectedIndex;
+    if (indexToDelete === null) {
       toast.warning("Выберите блок для удаления");
       return false;
     }
-    dispatch(deleteBlockAction(selectedIndex));
-    dispatch(pushHistory(blocks.filter((_, i) => i !== selectedIndex)));
+    dispatch(deleteBlockAction(indexToDelete));
+    dispatch(pushHistory(blocks.filter((_, i) => i !== indexToDelete)));
     toast.success("Блок удален");
     return true;
   };

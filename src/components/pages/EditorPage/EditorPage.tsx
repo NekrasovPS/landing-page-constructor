@@ -153,7 +153,7 @@ function EditorPanel() {
             blocks={blocks}
             selectedIndex={selectedIndex}
             onSelect={blockActions.selectBlock}
-            onDelete={() => blockActions.deleteBlock()}
+            onDelete={(index) => blockActions.deleteBlock(index)}
           />
         )}
       </div>

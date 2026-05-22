@@ -1,47 +1,45 @@
 import { useEffect } from "react";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useBlocks } from "../store/hooks";
 import { setBlocks } from "../store/slices/blocksSlice";
 import { push as pushHistory } from "../store/slices/historySlice";
 import { loadFromLocalStorage, saveToLocalStorage } from "../utils/localStorage";
 import type { BlockData } from "../type/blocks";
 
-// Временное решение для доступа к blocks в useEffect
-let currentBlocks = [] as BlockData[];
-
-export function setProjectBlocks(blocks: BlockData[]) {
-  currentBlocks = blocks;
-}
-
 /**
- * Хук для управления проектом
- * Отвечает за загрузку, сохранение, экспорт/импорт
+ * Хук для управления проектом.
+ * Отвечает за загрузку, автосохранение и очистку стейта проекта.
  */
 export function useProject() {
   const dispatch = useAppDispatch();
+  const blocks = useBlocks(); // Получаем актуальные блоки напрямую из Redux
 
-  // Загрузка проекта при монтировании
+  // Загрузка проекта при первичном монтировании приложения
   useEffect(() => {
     const saved = loadFromLocalStorage();
-    if (saved.length > 0) {
+    if (saved && saved.length > 0) {
       dispatch(setBlocks(saved));
     }
   }, [dispatch]);
 
-  // Автосохранение при изменении блоков
+  // Автосохранение в localStorage с дебаунсом в 1 секунду при изменении блоков
   useEffect(() => {
+    if (blocks.length === 0) return;
+
     const timer = setTimeout(() => {
-      saveToLocalStorage(currentBlocks);
+      saveToLocalStorage(blocks);
     }, 1000);
+
+    // Очищаем таймер, если блоки изменились быстрее, чем за 1 секунду
     return () => clearTimeout(timer);
-  }, []);
+  }, [blocks]);
 
   const saveProject = () => {
-    saveToLocalStorage(currentBlocks);
+    saveToLocalStorage(blocks);
   };
 
-  const importProject = (blocks: BlockData[]) => {
-    dispatch(setBlocks(blocks));
-    dispatch(pushHistory(blocks));
+  const importProject = (newBlocks: BlockData[]) => {
+    dispatch(setBlocks(newBlocks));
+    dispatch(pushHistory(newBlocks));
   };
 
   const clearProject = () => {
