@@ -3,7 +3,7 @@ import type { BlockData } from "../../type/blocks";
 
 interface BlocksState {
   items: BlockData[];
-  selectedId: number | null;
+  selectedId: number | null; // Индекс выбранного блока в массиве
 }
 
 const initialState: BlocksState = {
@@ -31,19 +31,25 @@ export const blocksSlice = createSlice({
       }
     },
     deleteBlock: (state, action: PayloadAction<number>) => {
-      state.items.splice(action.payload, 1);
-      if (state.selectedId === action.payload) {
+      const indexToDelete = action.payload;
+      state.items.splice(indexToDelete, 1);
+      
+      if (state.selectedId === indexToDelete) {
         state.selectedId = null;
-      }
-      // Обновляем selectedId если удалили блок перед выбранным
-      if (state.selectedId !== null && action.payload < state.selectedId) {
+      } else if (state.selectedId !== null && indexToDelete < state.selectedId) {
         state.selectedId--;
       }
     },
     duplicateBlock: (state, action: PayloadAction<number>) => {
       const index = action.payload;
       if (state.items[index]) {
-        state.items.splice(index + 1, 0, { ...state.items[index] });
+        // Создаем глубокую копию с НОВЫМ уникальным id, чтобы не ломать React keys
+        const original = state.items[index];
+        const clone: BlockData = {
+          ...JSON.parse(JSON.stringify(original)),
+          id: Math.random().toString(36).substring(2, 9), // Генерация нового стабильного ID
+        };
+        state.items.splice(index + 1, 0, clone);
       }
     },
     moveBlock: (state, action: PayloadAction<{ from: number; to: number }>) => {

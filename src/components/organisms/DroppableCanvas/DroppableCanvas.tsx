@@ -1,9 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { memo } from "react";
 import { blockMap } from "../../../utils/blockMap";
@@ -27,14 +23,10 @@ const SortableBlock = memo(function SortableBlock({
   onSelect: (index: number) => void;
   isSelected: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: `block-${index}` });
+  // PERF #1: Переводим dnd-kit на стабильный уникальный ID вместо индекса block-index
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: block.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -69,25 +61,16 @@ const SortableBlock = memo(function SortableBlock({
   );
 });
 
-export default function DroppableCanvas({
-  blocks,
-  onSelect,
-  selectedIndex,
-}: Props) {
+export default function DroppableCanvas({ blocks, onSelect, selectedIndex }: Props) {
   const { isOver, setNodeRef } = useDroppable({ id: "canvas" });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={`${styles.canvas} ${isOver ? styles.dropOver : ""}`}
-    >
-      <SortableContext
-        items={blocks.map((_, i) => `block-${i}`)}
-        strategy={verticalListSortingStrategy}
-      >
+    <div ref={setNodeRef} className={`${styles.canvas} ${isOver ? styles.dropOver : ""}`}>
+      {/* Передаем массив стабильных строковых ID в SortableContext */}
+      <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
         {blocks.map((block, index) => (
           <SortableBlock
-            key={`block-${index}`}
+            key={block.id} // Стабильный ключ для React рендеринга
             block={block}
             index={index}
             onSelect={onSelect}
