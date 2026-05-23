@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import type { BlockData } from "../../../type/blocks";
 import BlocksPanel from "../../organisms/BlocksPanel/BlocksPanel";
 import Canvas from "../../templates/Canvas/Canvas";
 import EditPanel from "../../organisms/EditPanel/EditPanel";
@@ -30,10 +29,11 @@ import {
   useIsPreviewModalOpen,
   useHistory,
 } from "../../../store/hooks";
-import { addBlock, setBlocks } from "../../../store/slices/blocksSlice";
+import { setBlocks } from "../../../store/slices/blocksSlice";
 import { push as pushHistory, setPresent } from "../../../store/slices/historySlice";
 import { useAppDispatch } from "../../../store/hooks";
 import { templates, type Template, templateCategories } from "../../../utils/templates";
+import type { BlockData } from "../../../type/blocks";
 
 import styles from "./EditorPage.module.css";
 
@@ -46,37 +46,37 @@ export default function EditorPage() {
   const device = useDevice();
   const zoom = useZoom();
   const historyState = useHistory();
-
+  
   const isTemplatesModalOpen = useIsTemplatesModalOpen();
   const isPreviewModalOpen = useIsPreviewModalOpen();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
 
-  // БАГ #2: Локальное состояние для отображения кастомного Drag Превью (any заменен на BlockData)
+  // Локальное состояние для отображения кастомного Drag Превью (Строгая типизация без any)
   const [activeDragBlock, setActiveDragBlock] = useState<BlockData | null>(null);
 
   const blockActions = useBlockActions({ blocks, selectedIndex });
-  const {
-    closeTemplates,
-    closePreview,
-    undo,
-    redo,
-    openPreview,
-    setDevice,
-    setZoom,
-    setActiveTab,
-    openTemplates,
+  const { 
+    closeTemplates, 
+    closePreview, 
+    undo, 
+    redo, 
+    openPreview, 
+    setDevice, 
+    setZoom, 
+    setActiveTab, 
+    openTemplates 
   } = useUI();
   const { saveProject, importProject, clearProject } = useProject();
   const toast = useToast();
 
-  // АРХИТЕКТУРА #4: Главный синхронизатор Undo/Redo.
+  // АРХИТЕКТУРА СИНХРОНИЗАЦИИ: Главный синхронизатор Undo/Redo. 
   // Перебрасывает снимки истории из history.present обратно в блоки для отрисовки холста
   useEffect(() => {
     if (historyState.present && historyState.present !== blocks) {
       dispatch(setBlocks(historyState.present));
     }
-  }, [historyState.present, dispatch, blocks]);
+  }, [historyState.present, blocks, dispatch]);
 
   // Первичный запуск — заносим дефолтные блоки в историю
   useEffect(() => {
@@ -90,22 +90,22 @@ export default function EditorPage() {
     const { active } = event;
     const activeId = active.id.toString();
 
-    // Если тащим из левой панели (создание нового блока)
-    if (!activeId.startsWith("block-")) {
+    // Ищем, есть ли блок с таким ID среди существующих на холсте
+    const existingBlock = blocks.find((b) => b.id === activeId);
+
+    if (existingBlock) {
+      // Сценарий 1: Сортировка существующего блока на холсте (Превью зафиксировано)
+      setActiveDragBlock(existingBlock);
+    } else {
+      // Сценарий 2: Тащим новый блок из левой панели палитры
       const blockData = active.data.current as { type: string; variant: string };
-      if (blockData) {
+      if (blockData?.type && blockData?.variant) {
         setActiveDragBlock({
-          id: "temp-drag-id",
+          id: activeId, // Передаем ID варианта ("hero-1") для корректного маппинга мини-превью
           type: blockData.type,
           variant: blockData.variant,
           props: {},
         });
-      }
-    } else {
-      // Если сортируем существующие блоки на холсте
-      const index = parseInt(activeId.replace("block-", ""), 10);
-      if (!isNaN(index) && blocks[index]) {
-        setActiveDragBlock(blocks[index]);
       }
     }
   };
@@ -119,10 +119,13 @@ export default function EditorPage() {
     const activeId = active.id.toString();
     const overId = over.id.toString();
 
-    // 1. Сценарий сортировки на холсте (по стабильным ID)
-    if (active.id !== over.id && !blocks.map((b) => b.id).includes(activeId)) {
-      const fromIndex = blocks.findIndex((b) => b.id === active.id);
-      const toIndex = blocks.findIndex((b) => b.id === over.id);
+    // Массив ID всех блоков, которые сейчас уже лежат на холсте
+    const existingBlockIds = blocks.map((b) => b.id);
+
+    // СЦЕНАРИЙ 1: Сортировка уже существующих на холсте блоков между собой
+    if (active.id !== over.id && existingBlockIds.includes(activeId)) {
+      const fromIndex = blocks.findIndex((b) => b.id === activeId);
+      const toIndex = blocks.findIndex((b) => b.id === overId);
 
       if (fromIndex !== -1 && toIndex !== -1) {
         blockActions.moveBlock(fromIndex, toIndex);
@@ -130,25 +133,42 @@ export default function EditorPage() {
       }
     }
 
-    // 2. Сценарий дропа нового блока из левой панели на холст
-    if (overId === "canvas") {
+    // СЦЕНАРИЙ 2: Дроп абсолютно НОВОГО блока из левой панели палитры в любую точку
+    if (!existingBlockIds.includes(activeId)) {
       const blockData = active.data.current as { type: string; variant: string };
+      
       if (blockData?.type && blockData?.variant) {
-        const newBlock = {
-          id: generateId(), // Стабильный ID вместо индексов
-          type: blockData.type,
-          variant: blockData.variant,
+        const newBlock: BlockData = { 
+          id: generateId(), // Генерируем уникальный стабильный ID для нового блока
+          type: blockData.type, 
+          variant: blockData.variant, 
           props: {},
         };
 
-        dispatch(addBlock(newBlock));
-        dispatch(pushHistory([...blocks, newBlock]));
-        toast.success("Блок добавлен");
+        let targetIndex = blocks.length; // По умолчанию дропаем в самый конец списка
+
+        // ИНТЕРПОЛЯЦИЯ МЕЖДУ БЛОКАМИ:
+        // Если мы отпустили новый блок НАД каким-то конкретным существующим блоком
+        if (existingBlockIds.includes(overId)) {
+          const overIndex = blocks.findIndex((b) => b.id === overId);
+          if (overIndex !== -1) {
+            targetIndex = overIndex; // Перехватываем индекс для точечного внедрения
+          }
+        }
+
+        // Иммутабельно создаем новый массив с элементом на вычисленной позиции
+        const updatedBlocks = [...blocks];
+        updatedBlocks.splice(targetIndex, 0, newBlock);
+        
+        // Обновляем глобальный стор конструктора и заносим снимок в историю изменений
+        dispatch(setBlocks(updatedBlocks));
+        dispatch(pushHistory(updatedBlocks));
+        toast.success("Блок успешно добавлен на макет");
       }
     }
   };
 
-  // Мемоизируем колбэки горячих клавиш, чтобы не плодить подписки вuseHotkeys
+  // Мемоизируем колбэки горячих клавиш, чтобы избежать инвалидации ссылок
   const handleSave = useCallback(() => {
     saveProject();
     toast.success("Проект сохранен!");
@@ -177,12 +197,12 @@ export default function EditorPage() {
 
   return (
     <div className={styles.editorLayout}>
-      <DndProvider
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
+      <DndProvider 
+        onDragStart={handleDragStart} 
+        onDragEnd={handleDragEnd} 
         activeBlock={activeDragBlock}
       >
-        {/* Хедер разметки */}
+        {/* Шапка редактора */}
         <Header
           projectName="Мой лендинг"
           onSave={handleSave}
@@ -193,11 +213,12 @@ export default function EditorPage() {
         />
 
         <div className={styles.editorBody}>
+          {/* Левая панель с доступными компонентами */}
           <div className={styles.sidebar}>
             <BlocksPanel />
           </div>
 
-          {/* Рабочая область Canvas */}
+          {/* Центральная интерактивная рабочая область (Canvas) */}
           <div className={styles.canvasArea}>
             <Toolbar
               device={device}
@@ -221,7 +242,7 @@ export default function EditorPage() {
             </div>
           </div>
 
-          {/* Правая панель управления */}
+          {/* Правая контекстная панель управления */}
           <div className={styles.panel}>
             <div className={styles.panelTabs}>
               <button
@@ -253,7 +274,7 @@ export default function EditorPage() {
                   blocks={blocks}
                   selectedIndex={selectedIndex}
                   onSelect={blockActions.selectBlock}
-                  onDelete={(index) => blockActions.deleteBlock(index)} // БАГ #1: Исправлено — теперь прокидываем индекс конкретного слоя
+                  onDelete={(index) => blockActions.deleteBlock(index)}
                 />
               )}
             </div>
@@ -261,6 +282,7 @@ export default function EditorPage() {
         </div>
       </DndProvider>
 
+      {/* Модальные окна */}
       <TemplatesModal
         isOpen={isTemplatesModalOpen}
         onClose={closeTemplates}
@@ -269,7 +291,11 @@ export default function EditorPage() {
         categories={templateCategories}
       />
 
-      <PreviewModal isOpen={isPreviewModalOpen} onClose={closePreview} blocks={blocks} />
+      <PreviewModal 
+        isOpen={isPreviewModalOpen} 
+        onClose={closePreview} 
+        blocks={blocks} 
+      />
     </div>
   );
 }

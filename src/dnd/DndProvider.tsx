@@ -19,30 +19,30 @@ function renderMiniPreview(block: BlockData) {
     "hero-1": { icon: "🎯", label: "Классический Hero" },
     "hero-2": { icon: "✨", label: "Градиент Hero" },
     "hero-3": { icon: "🖼️", label: "Hero с фото" },
-    "hero-4": { icon: "🔥", label: "Split Screen" },
-    "hero-5": { icon: "💎", label: "Centered" },
-    "hero-6": { icon: "🎬", label: "Video BG" },
-    "hero-7": { icon: "⚪", label: "Minimalist" },
-    "hero-8": { icon: "📝", label: "With Form" },
-    "hero-9": { icon: "🔤", label: "Typographic" },
-    "hero-10": { icon: "🌙", label: "Dark Mode" },
+    "hero-4": { icon: "🔥", label: "Разделенный экран" },
+    "hero-5": { icon: "💎", label: "Центрированный Hero" },
+    "hero-6": { icon: "🎬", label: "Hero с видео-фоном" },
+    "hero-7": { icon: "⚪", label: "Минималистичный Hero" },
+    "hero-8": { icon: "📝", label: "Hero с формой захвата" },
+    "hero-9": { icon: "🔤", label: "Типографический Hero" },
+    "hero-10": { icon: "🌙", label: "Темный неоновый Hero" },
     "feature-1": { icon: "⭐", label: "Список особенностей" },
     "feature-2": { icon: "📊", label: "Сетка преимуществ" },
     "benefit-1": { icon: "✓", label: "Наши преимущества" },
-    "pricing-1": { icon: "💰", label: "Тарифы" },
-    "testimonial-1": { icon: "💬", label: "Отзывы" },
+    "pricing-1": { icon: "💰", label: "Тарифные планы" },
+    "testimonial-1": { icon: "💬", label: "Отзывы клиентов" },
     "cta-1": { icon: "📣", label: "Призыв к действию" },
-    "footer-1": { icon: "📍", label: "Подвал" },
-    "gallery-1": { icon: "🖼️", label: "Галерея" },
-    "faq-1": { icon: "❓", label: "Вопросы и ответы" },
-    "team-1": { icon: "👥", label: "Команда" },
+    "footer-1": { icon: "📍", label: "Подвал сайта" },
+    "gallery-1": { icon: "🖼️", label: "Галерея работ" },
+    "faq-1": { icon: "❓", label: "Вопросы и ответы (FAQ)" },
+    "team-1": { icon: "👥", label: "Наша команда" },
     "steps-1": { icon: "👣", label: "Этапы работы" },
-    "statistics-1": { icon: "📊", label: "Статистика" },
-    "logos-1": { icon: "🏢", label: "Логотипы" },
-    "video-1": { icon: "🎬", label: "Видео" },
-    "newsletter-1": { icon: "📧", label: "Рассылка" },
-    "contact-1": { icon: "✉️", label: "Контакты" },
-    "app-1": { icon: "📱", label: "Приложение" },
+    "statistics-1": { icon: "📈", label: "Блок статистики" },
+    "logos-1": { icon: "🏢", label: "Логотипы партнеров" },
+    "video-1": { icon: "🎥", label: "Видео-презентация" },
+    "newsletter-1": { icon: "📧", label: "Подписка на рассылку" },
+    "contact-1": { icon: "✉️", label: "Форма контактов" },
+    "app-1": { icon: "📱", label: "Скачивание приложения" },
   };
 
   const info = blockInfo[block.variant] || { icon: "📦", label: block.variant };
@@ -55,10 +55,6 @@ function renderMiniPreview(block: BlockData) {
   );
 }
 
-/**
- * DndProvider - обертка для drag-and-drop
- * KISS: только необходимая логика
- */
 export default function DndProvider({
   children,
   activeBlock,
