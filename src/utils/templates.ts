@@ -1,4 +1,5 @@
 import type { BlockData } from "../type/blocks";
+import { generateId } from "./helpers";
 
 export interface Template {
   id: string;
@@ -17,13 +18,13 @@ export const templates: Template[] = [
     thumbnail: "🚀",
     category: "Бизнес",
     blocks: [
-      { type: "hero", variant: "hero-3", props: {
+      { id: generateId(), type: "hero", variant: "hero-3", props: {
         title: "Инновационное решение для вашего бизнеса",
         description: "Мы создаем технологии будущего уже сегодня",
         buttonText: "Попробовать бесплатно",
         backgroundImage: "https://picsum.photos/800/600",
       }},
-      { type: "feature", variant: "feature-2", props: {
+      { id: generateId(), type: "feature", variant: "feature-2", props: {
         title: "Наши преимущества",
         feature1Title: "Быстро",
         feature1Description: "Молниеносная скорость работы",
@@ -32,7 +33,7 @@ export const templates: Template[] = [
         feature3Title: "Надежно",
         feature3Description: "Гарантия стабильной работы",
       }},
-      { type: "benefit", variant: "benefit-1", props: {
+      { id: generateId(), type: "benefit", variant: "benefit-1", props: {
         title: "Почему выбирают нас",
         benefit1Icon: "⚡",
         benefit1Title: "Скорость",
@@ -44,7 +45,7 @@ export const templates: Template[] = [
         benefit3Title: "Гибкость",
         benefit3Description: "Легкая настройка под себя",
       }},
-      { type: "pricing", variant: "pricing-1", props: {
+      { id: generateId(), type: "pricing", variant: "pricing-1", props: {
         title: "Тарифные планы",
         subtitle: "Выберите план, который подходит именно вам",
         plan1Name: "Старт",
@@ -60,7 +61,7 @@ export const templates: Template[] = [
         plan3Features: "Безлимитно,Все функции,Персональный менеджер",
         plan3ButtonText: "Связаться с нами",
       }},
-      { type: "testimonial", variant: "testimonial-1", props: {
+      { id: generateId(), type: "testimonial", variant: "testimonial-1", props: {
         title: "Отзывы клиентов",
         subtitle: "Что говорят о нас наши клиенты",
         testimonial1Quote: "Отличный сервис! Команда превзошла все ожидания.",
@@ -79,12 +80,12 @@ export const templates: Template[] = [
         testimonial3Avatar: "👨‍💻",
         testimonial3Rating: "5",
       }},
-      { type: "cta", variant: "cta-1", props: {
+      { id: generateId(), type: "cta", variant: "cta-1", props: {
         title: "Готовы начать?",
         description: "Присоединяйтесь к тысячам довольных клиентов уже сегодня",
         buttonText: "Начать сейчас",
       }},
-      { type: "footer", variant: "footer-1", props: {
+      { id: generateId(), type: "footer", variant: "footer-1", props: {
         brandName: "StartupX",
         brandDescription: "Создаем лучшие решения для вашего бизнеса с 2024 года.",
         brandLogo: "🚀",
@@ -106,12 +107,12 @@ export const templates: Template[] = [
     thumbnail: "👨‍🎨",
     category: "Личное",
     blocks: [
-      { type: "hero", variant: "hero-2", props: {
+      { id: generateId(), type: "hero", variant: "hero-2", props: {
         title: "Привет, я Джон",
         description: "Веб-разработчик и UI/UX дизайнер",
         buttonText: "Смотреть работы",
       }},
-      { type: "benefit", variant: "benefit-1", props: {
+      { id: generateId(), type: "benefit", variant: "benefit-1", props: {
         title: "Мои навыки",
         benefit1Icon: "💻",
         benefit1Title: "Разработка",
@@ -123,7 +124,7 @@ export const templates: Template[] = [
         benefit3Title: "Mobile",
         benefit3Description: "React Native, Flutter",
       }},
-      { type: "testimonial", variant: "testimonial-1", props: {
+      { id: generateId(), type: "testimonial", variant: "testimonial-1", props: {
         title: "Отзывы клиентов",
         subtitle: "Что говорят о моей работе",
         testimonial1Quote: "Отличная работа! Все сроки соблюдены.",
@@ -142,12 +143,12 @@ export const templates: Template[] = [
         testimonial3Avatar: "👨‍💻",
         testimonial3Rating: "5",
       }},
-      { type: "cta", variant: "cta-1", props: {
+      { id: generateId(), type: "cta", variant: "cta-1", props: {
         title: "Давайте работать вместе!",
         description: "Открыт для новых проектов и предложений",
         buttonText: "Связаться со мной",
       }},
-      { type: "footer", variant: "footer-1", props: {
+      { id: generateId(), type: "footer", variant: "footer-1", props: {
         brandName: "John Doe",
         brandDescription: "Создаю цифровые продукты с душой",
         brandLogo: "👨‍🎨",
@@ -169,13 +170,13 @@ export const templates: Template[] = [
     thumbnail: "📦",
     category: "Бизнес",
     blocks: [
-      { type: "hero", variant: "hero-1", props: {
+      { id: generateId(), type: "hero", variant: "hero-1", props: {
         title: "Новый iPhone 16 Pro",
         description: "Технологии будущего в ваших руках",
         buttonText: "Предзаказ",
         backgroundImage: "https://picsum.photos/1920/1080",
       }},
-      { type: "feature", variant: "feature-2", props: {
+      { id: generateId(), type: "feature", variant: "feature-2", props: {
         title: "Особенности",
         feature1Title: "A18 Bionic",
         feature1Description: "Новейший процессор",
@@ -184,7 +185,7 @@ export const templates: Template[] = [
         feature3Title: "24 часа",
         feature3Description: "Работы без подзарядки",
       }},
-      { type: "pricing", variant: "pricing-1", props: {
+      { id: generateId(), type: "pricing", variant: "pricing-1", props: {
         title: "Выберите модель",
         subtitle: "Доступны три версии",
         plan1Name: "128 ГБ",
@@ -200,7 +201,7 @@ export const templates: Template[] = [
         plan3Features: "6.7\" дисплей,Тройная камера,Face ID",
         plan3ButtonText: "Купить",
       }},
-      { type: "footer", variant: "footer-1", props: {
+      { id: generateId(), type: "footer", variant: "footer-1", props: {
         brandName: "Apple",
         brandDescription: "Инновации с 1976 года",
         brandLogo: "🍎",
