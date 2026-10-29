@@ -1,7 +1,9 @@
 import { memo } from "react";
 import styles from "./Toolbar.module.css";
 
-export type DeviceType = "desktop" | "tablet" | "mobile";
+// Единственный источник правды для DeviceType — src/type/blocks.ts
+export type { DeviceType } from "../../../type/blocks";
+import type { DeviceType } from "../../../type/blocks";
 
 export interface ToolbarProps {
   device: DeviceType;

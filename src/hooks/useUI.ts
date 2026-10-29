@@ -7,7 +7,7 @@ import {
   setTemplatesModalOpen as setTemplatesModalOpenAction,
 } from "../store/slices/uiSlice";
 import { undo as undoHistory, redo as redoHistory } from "../store/slices/historySlice";
-import type { DeviceType } from "../components/organisms/Toolbar/Toolbar";
+import type { DeviceType } from "../type/blocks";
 
 /**
  * Хук для управления UI
