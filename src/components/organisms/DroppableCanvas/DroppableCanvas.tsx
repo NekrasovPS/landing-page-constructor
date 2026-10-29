@@ -8,22 +8,20 @@ import styles from "./DroppableCanvas.module.css";
 
 interface Props {
   blocks: BlockData[];
-  onSelect: (index: number) => void;
-  selectedIndex: number | null;
+  onSelect: (id: string) => void;
+  selectedBlockId: string | null;
 }
 
 const SortableBlock = memo(function SortableBlock({
   block,
-  index,
   onSelect,
   isSelected,
 }: {
   block: BlockData;
-  index: number;
-  onSelect: (index: number) => void;
+  onSelect: (id: string) => void;
   isSelected: boolean;
 }) {
-  // PERF #1: Переводим dnd-kit на стабильный уникальный ID вместо индекса block-index
+  // dnd-kit работает на стабильном уникальном ID блока
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,
   });
@@ -47,7 +45,7 @@ const SortableBlock = memo(function SortableBlock({
       {...attributes}
       onClick={(e) => {
         e.stopPropagation();
-        onSelect(index);
+        onSelect(block.id);
       }}
       className={`${styles.blockWrapper} ${isSelected ? styles.selected : ""}`}
     >
@@ -61,20 +59,19 @@ const SortableBlock = memo(function SortableBlock({
   );
 });
 
-export default function DroppableCanvas({ blocks, onSelect, selectedIndex }: Props) {
+export default function DroppableCanvas({ blocks, onSelect, selectedBlockId }: Props) {
   const { isOver, setNodeRef } = useDroppable({ id: "canvas" });
 
   return (
     <div ref={setNodeRef} className={`${styles.canvas} ${isOver ? styles.dropOver : ""}`}>
       {/* Передаем массив стабильных строковых ID в SortableContext */}
       <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
-        {blocks.map((block, index) => (
+        {blocks.map((block) => (
           <SortableBlock
             key={block.id} // Стабильный ключ для React рендеринга
             block={block}
-            index={index}
             onSelect={onSelect}
-            isSelected={index === selectedIndex}
+            isSelected={block.id === selectedBlockId}
           />
         ))}
       </SortableContext>

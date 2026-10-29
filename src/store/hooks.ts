@@ -29,11 +29,11 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // Селекторы для blocks
 export const useBlocks = () => useAppSelector((state) => state.blocks.items);
-export const useSelectedBlockId = () => useAppSelector((state) => state.blocks.selectedId);
+export const useSelectedBlockId = () => useAppSelector((state) => state.blocks.selectedBlockId);
 export const useSelectedBlock = () => {
   const blocks = useBlocks();
-  const selectedId = useSelectedBlockId();
-  return selectedId !== null ? blocks[selectedId] : null;
+  const selectedBlockId = useSelectedBlockId();
+  return selectedBlockId !== null ? (blocks.find((b) => b.id === selectedBlockId) ?? null) : null;
 };
 
 // Селекторы для UI

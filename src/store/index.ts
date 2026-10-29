@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import blocksReducer from "./slices/blocksSlice";
 import uiReducer from "./slices/uiSlice";
 import historyReducer from "./slices/historySlice";
+import { listenerMiddleware } from "./listenerMiddleware";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,7 @@ export const store = configureStore({
         ignoredActions: ["history/undo", "history/redo"],
         ignoredPaths: ["history.past", "history.future"],
       },
-    }),
+    }).prepend(listenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -30,7 +30,7 @@ import {
   useHistory,
 } from "../../../store/hooks";
 import { setBlocks } from "../../../store/slices/blocksSlice";
-import { push as pushHistory, setPresent } from "../../../store/slices/historySlice";
+import { setPresent } from "../../../store/slices/historySlice";
 import { useAppDispatch } from "../../../store/hooks";
 import { templates, type Template, templateCategories } from "../../../utils/templates";
 import type { BlockData } from "../../../type/blocks";
@@ -40,7 +40,7 @@ import styles from "./EditorPage.module.css";
 export default function EditorPage() {
   const dispatch = useAppDispatch();
   const blocks = useBlocks();
-  const selectedIndex = useSelectedBlockId();
+  const selectedBlockId = useSelectedBlockId();
   const selectedBlock = useSelectedBlock();
   const activeTab = useActiveTab();
   const device = useDevice();
@@ -55,7 +55,8 @@ export default function EditorPage() {
   // Локальное состояние для отображения кастомного Drag Превью (Строгая типизация без any)
   const [activeDragBlock, setActiveDragBlock] = useState<BlockData | null>(null);
 
-  const blockActions = useBlockActions({ blocks, selectedIndex });
+  const blockActions = useBlockActions({ blocks, selectedBlockId });
+  const { selectBlock, deleteBlock, duplicateBlock, updateBlock, moveBlock } = blockActions;
   const { 
     closeTemplates, 
     closePreview, 
@@ -70,17 +71,13 @@ export default function EditorPage() {
   const { saveProject, importProject, clearProject } = useProject();
   const toast = useToast();
 
-  // БАГ #HISTORY/TEXT: фиксация снимка истории после редактирования текста в EditPanel.
-  // updateBlock меняет props блока мутируемо (через immer), поэтому берём глубокую копию,
-  // чтобы past/present не ссылались на одни и те же объекты.
-  const commitHistory = useCallback(() => {
-    dispatch(pushHistory(JSON.parse(JSON.stringify(blocks))));
-  }, [blocks, dispatch]);
-
   // АРХИТЕКТУРА СИНХРОНИЗАЦИИ: Главный синхронизатор Undo/Redo. 
   // Перебрасывает снимки истории из history.present обратно в блоки для отрисовки холста
   useEffect(() => {
-    if (historyState.present && historyState.present !== blocks) {
+    const same =
+      historyState.present.length === blocks.length &&
+      historyState.present.every((b, i) => b.id === blocks[i].id);
+    if (!same) {
       dispatch(setBlocks(historyState.present));
     }
   }, [historyState.present, blocks, dispatch]);
@@ -131,13 +128,8 @@ export default function EditorPage() {
 
     // СЦЕНАРИЙ 1: Сортировка уже существующих на холсте блоков между собой
     if (active.id !== over.id && existingBlockIds.includes(activeId)) {
-      const fromIndex = blocks.findIndex((b) => b.id === activeId);
-      const toIndex = blocks.findIndex((b) => b.id === overId);
-
-      if (fromIndex !== -1 && toIndex !== -1) {
-        blockActions.moveBlock(fromIndex, toIndex);
-        return;
-      }
+      moveBlock(activeId, overId);
+      return;
     }
 
     // СЦЕНАРИЙ 2: Дроп абсолютно НОВОГО блока из левой панели палитры в любую точку
@@ -167,9 +159,8 @@ export default function EditorPage() {
         const updatedBlocks = [...blocks];
         updatedBlocks.splice(targetIndex, 0, newBlock);
         
-        // Обновляем глобальный стор конструктора и заносим снимок в историю изменений
+        // Обновляем стор; снимок в историю запишет listenerMiddleware
         dispatch(setBlocks(updatedBlocks));
-        dispatch(pushHistory(updatedBlocks));
         toast.success("Блок успешно добавлен на макет");
       }
     }
@@ -191,12 +182,12 @@ export default function EditorPage() {
   // ВАЖНО: deleteBlock/duplicateBlock передаются без аргументов — иначе объект
   // KeyboardEvent попал бы в параметр explicitIndex и удалился бы блок по «индексу» NaN/объекту.
   const handleDeleteSelected = useCallback(() => {
-    blockActions.deleteBlock();
-  }, [blockActions]);
+    deleteBlock();
+  }, [deleteBlock]);
 
   const handleDuplicateSelected = useCallback(() => {
-    blockActions.duplicateBlock();
-  }, [blockActions]);
+    duplicateBlock();
+  }, [duplicateBlock]);
 
   useHotkeys({
     onSave: handleSave,
@@ -252,8 +243,8 @@ export default function EditorPage() {
             <div className={styles.canvasWrapper}>
               <Canvas
                 blocks={blocks}
-                onSelect={blockActions.selectBlock}
-                selectedIndex={selectedIndex}
+                onSelect={selectBlock}
+                selectedBlockId={selectedBlockId}
                 device={device}
                 zoom={zoom}
               />
@@ -283,17 +274,16 @@ export default function EditorPage() {
                   <ProjectActions blocks={blocks} onImport={importProject} />
                   <EditPanel
                     block={selectedBlock || undefined}
-                    onChange={blockActions.updateBlock}
-                    onDelete={() => blockActions.deleteBlock()}
-                    onCommit={commitHistory}
+                    onChange={updateBlock}
+                    onDelete={() => deleteBlock()}
                   />
                 </>
               ) : (
                 <LayersPanel
                   blocks={blocks}
-                  selectedIndex={selectedIndex}
-                  onSelect={blockActions.selectBlock}
-                  onDelete={(index) => blockActions.deleteBlock(index)}
+                  selectedBlockId={selectedBlockId}
+                  onSelect={selectBlock}
+                  onDelete={(id) => deleteBlock(id)}
                 />
               )}
             </div>

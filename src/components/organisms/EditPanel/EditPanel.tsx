@@ -7,11 +7,9 @@ interface EditPanelProps {
   block?: BlockData;
   onChange: (updated: BlockProps) => void;
   onDelete: () => void;
-  /** Вызывается при завершении редактирования поля — для фиксации снимка в истории Undo/Redo */
-  onCommit?: () => void;
 }
 
-export default memo(function EditPanel({ block, onChange, onDelete, onCommit }: EditPanelProps) {
+export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelProps) {
   // Локальный стейт для изоляции ввода текста от ререндера Canvas
   const [localProps, setLocalProps] = useState<Record<string, string>>({});
 
@@ -74,11 +72,10 @@ export default memo(function EditPanel({ block, onChange, onDelete, onCommit }: 
     setLocalProps((prev) => ({ ...prev, [fieldName]: value }));
   };
 
-  // Пушим данные в глобальный Redux только при потере фокуса (onBlur)
+  // Пушим данные в глобальный Redux только при потере фокуса (onBlur).
+  // Снимок в историю запишет listenerMiddleware после updateBlock — вручную коммитить не нужно.
   const handlePushToStore = (fieldName: string) => {
     onChange({ [fieldName]: localProps[fieldName] });
-    // Фиксируем итоговый снимок в истории Undo/Redo после применения коммита в сторе
-    requestAnimationFrame(() => onCommit?.());
   };
 
   const handleFocusStart = () => {

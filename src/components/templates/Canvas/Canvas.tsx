@@ -6,8 +6,8 @@ import styles from "./Canvas.module.css";
 
 interface CanvasProps {
   blocks: BlockData[];
-  onSelect: (index: number) => void;
-  selectedIndex: number | null;
+  onSelect: (id: string) => void;
+  selectedBlockId: string | null;
   device: DeviceType;
   zoom: number;
 }
@@ -15,7 +15,7 @@ interface CanvasProps {
 export default function Canvas({
   blocks,
   onSelect,
-  selectedIndex,
+  selectedBlockId,
   device,
   zoom,
 }: CanvasProps) {
@@ -31,7 +31,7 @@ export default function Canvas({
         <DroppableCanvas
           blocks={blocks}
           onSelect={onSelect}
-          selectedIndex={selectedIndex}
+          selectedBlockId={selectedBlockId}
         />
       </div>
     </div>

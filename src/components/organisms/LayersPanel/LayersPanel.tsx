@@ -4,9 +4,9 @@ import styles from "./LayersPanel.module.css";
 
 export interface LayersPanelProps {
   blocks: BlockData[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
-  onDelete: (index: number) => void;
+  selectedBlockId: string | null;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const blockIcons: Record<string, string> = {
@@ -25,7 +25,7 @@ const blockIcons: Record<string, string> = {
 
 export default memo(function LayersPanel({
   blocks,
-  selectedIndex,
+  selectedBlockId,
   onSelect,
   onDelete,
 }: LayersPanelProps) {
@@ -62,16 +62,16 @@ export default memo(function LayersPanel({
 
   return (
     <div className={styles.layers}>
-      {blocks.map((block, index) => {
+      {blocks.map((block) => {
         const type = block.type;
         const icon = blockIcons[type] || "📦";
-        const isSelected = index === selectedIndex;
+        const isSelected = block.id === selectedBlockId;
 
         return (
           <div
-            key={`${block.variant}-${index}`}
+            key={block.id}
             className={`${styles.layer} ${isSelected ? styles.selected : ""}`}
-            onClick={() => onSelect(index)}
+            onClick={() => onSelect(block.id)}
           >
             <span className={styles.dragIcon}>⋮⋮</span>
             <span className={styles.icon}>{icon}</span>
@@ -80,7 +80,7 @@ export default memo(function LayersPanel({
               className={styles.deleteBtn}
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(index);
+                onDelete(block.id);
               }}
               title="Удалить"
             >

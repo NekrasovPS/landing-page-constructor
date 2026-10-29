@@ -23,7 +23,12 @@ export function createGradient(colors: string[], direction = 135): string {
  * @returns Уникальный ID
  */
 export function generateId(): string {
-  return Math.random().toString(36).substring(2, 9);
+  // #7: единый источник правды для id. crypto.randomUUID даёт гарантированную уникальность
+  // (Math.random().substr(36) мог коллизировать и обрезался до 7 символов без энтропии UUID).
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 10)}`;
 }
 
 /**
