@@ -1,7 +1,7 @@
 import { useEffect } from "react";
+import { generateId } from "../utils/helpers";
 import { useAppDispatch, useBlocks } from "../store/hooks";
 import { setBlocks } from "../store/slices/blocksSlice";
-import { push as pushHistory } from "../store/slices/historySlice";
 import { loadFromLocalStorage, saveToLocalStorage, clearLocalStorage } from "../utils/localStorage";
 import type { BlockData } from "../type/blocks";
 
@@ -52,16 +52,14 @@ export function useProject() {
       .filter((b) => b && typeof b.type === "string" && typeof b.variant === "string")
       .map((b) => ({
         ...b,
-        id: b.id || Math.random().toString(36).substring(2, 9),
+        id: b.id || generateId(),
         props: b.props ?? {},
       }));
     dispatch(setBlocks(normalized));
-    dispatch(pushHistory(normalized));
   };
 
   const clearProject = () => {
     dispatch(setBlocks([]));
-    dispatch(pushHistory([]));
     // Немедленно убираем сохранённый проект, не полагаясь на дебаунс автосохранения
     clearLocalStorage();
   };

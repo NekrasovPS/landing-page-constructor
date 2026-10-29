@@ -1,15 +1,23 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { BlockData } from "../../type/blocks";
+import { generateId } from "../../utils/helpers";
 
 interface BlocksState {
   items: BlockData[];
-  selectedId: number | null; // Индекс выбранного блока в массиве
+  // #1: selectedBlockId хранит СТАБИЛЬНЫЙ id блока, а не индекс.
+  // Индекс — производная величина: любое удаление/перемещение рассинхронизировало
+  // выделение и приводило к удалению/редактированию «не того» блока.
+  selectedBlockId: string | null;
 }
 
 const initialState: BlocksState = {
   items: [],
-  selectedId: null,
+  selectedBlockId: null,
 };
+
+// Внутренний хелпер: индекс блока по его id (единственное место, где id→index)
+const indexOfId = (items: BlockData[], id: string): number =>
+  items.findIndex((b) => b.id === id);
 
 export const blocksSlice = createSlice({
   name: "blocks",
@@ -17,55 +25,63 @@ export const blocksSlice = createSlice({
   reducers: {
     setBlocks: (state, action: PayloadAction<BlockData[]>) => {
       state.items = action.payload;
+      // Выделение сбрасываем только если выбранного блока больше нет в списке
+      if (
+        state.selectedBlockId !== null &&
+        !action.payload.some((b) => b.id === state.selectedBlockId)
+      ) {
+        state.selectedBlockId = null;
+      }
     },
     addBlock: (state, action: PayloadAction<BlockData>) => {
       state.items.push(action.payload);
     },
     updateBlock: (
       state,
-      action: PayloadAction<{ index: number; props: Record<string, string> }>
+      action: PayloadAction<{ id: string; props: Record<string, string> }>
     ) => {
-      const { index, props } = action.payload;
-      if (state.items[index]) {
+      const { id, props } = action.payload;
+      const index = indexOfId(state.items, id);
+      if (index !== -1) {
         state.items[index].props = { ...state.items[index].props, ...props };
       }
     },
-    deleteBlock: (state, action: PayloadAction<number>) => {
-      const indexToDelete = action.payload;
-      state.items.splice(indexToDelete, 1);
-      
-      if (state.selectedId === indexToDelete) {
-        state.selectedId = null;
-      } else if (state.selectedId !== null && indexToDelete < state.selectedId) {
-        state.selectedId--;
+    deleteBlock: (state, action: PayloadAction<string>) => {
+      const idToDelete = action.payload;
+      const index = indexOfId(state.items, idToDelete);
+      if (index === -1) return;
+      state.items.splice(index, 1);
+
+      if (state.selectedBlockId === idToDelete) {
+        state.selectedBlockId = null;
       }
     },
-    duplicateBlock: (state, action: PayloadAction<number>) => {
-      const index = action.payload;
-      if (state.items[index]) {
+    duplicateBlock: (state, action: PayloadAction<string>) => {
+      const index = indexOfId(state.items, action.payload);
+      if (index !== -1) {
         // Создаем глубокую копию с НОВЫМ уникальным id, чтобы не ломать React keys
         const original = state.items[index];
         const clone: BlockData = {
           ...JSON.parse(JSON.stringify(original)),
-          id: Math.random().toString(36).substring(2, 9), // Генерация нового стабильного ID
+          id: generateId(),
         };
         state.items.splice(index + 1, 0, clone);
       }
     },
-    moveBlock: (state, action: PayloadAction<{ from: number; to: number }>) => {
-      const { from, to } = action.payload;
+    moveBlock: (state, action: PayloadAction<{ fromId: string; toId: string }>) => {
+      const { fromId, toId } = action.payload;
+      const from = indexOfId(state.items, fromId);
+      const to = indexOfId(state.items, toId);
+      if (from === -1 || to === -1 || from === to) return;
       const [removed] = state.items.splice(from, 1);
       state.items.splice(to, 0, removed);
-      if (state.selectedId === from) {
-        state.selectedId = to;
-      }
     },
-    selectBlock: (state, action: PayloadAction<number | null>) => {
-      state.selectedId = action.payload;
+    selectBlock: (state, action: PayloadAction<string | null>) => {
+      state.selectedBlockId = action.payload;
     },
     clearBlocks: (state) => {
       state.items = [];
-      state.selectedId = null;
+      state.selectedBlockId = null;
     },
   },
 });

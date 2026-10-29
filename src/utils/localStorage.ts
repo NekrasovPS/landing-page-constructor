@@ -1,4 +1,5 @@
 import type { BlockData } from "../type/blocks";
+import { generateId } from "./helpers";
 
 const STORAGE_KEY = "landing-constructor-project";
 
@@ -30,7 +31,7 @@ export function loadFromLocalStorage(): BlockData[] {
       )
       .map((b) => ({
         ...b,
-        id: typeof b.id === "string" && b.id ? b.id : Math.random().toString(36).substring(2, 9),
+        id: typeof b.id === "string" && b.id ? b.id : generateId(),
         props: (b.props && typeof b.props === "object" ? b.props : {}) as BlockData["props"],
       }));
   } catch (error) {
