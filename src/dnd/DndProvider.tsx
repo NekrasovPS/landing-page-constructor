@@ -1,5 +1,6 @@
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter } from "@dnd-kit/core";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import type { ReactNode } from "react";
 import type { BlockData } from "../type/blocks";
 import styles from "./DndOverlay.module.css";
@@ -61,8 +62,25 @@ export default function DndProvider({
   onDragStart,
   onDragEnd,
 }: DndProviderProps) {
+  // БАГ DND: без явных сенсоров dnd-kit по умолчанию использует только PointerSensor
+  // с активацией по клику — это ломает обычные клики по блокам и недоступность с клавиатуры.
+  // activationConstraint с задержкой/distinction позволяет различать клик и перетаскивание.
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
   return (
-    <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
       {children}
       <DragOverlay dropAnimation={{ duration: 200 }}>
         {activeBlock ? renderMiniPreview(activeBlock) : null}

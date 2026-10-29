@@ -70,6 +70,13 @@ export default function EditorPage() {
   const { saveProject, importProject, clearProject } = useProject();
   const toast = useToast();
 
+  // БАГ #HISTORY/TEXT: фиксация снимка истории после редактирования текста в EditPanel.
+  // updateBlock меняет props блока мутируемо (через immer), поэтому берём глубокую копию,
+  // чтобы past/present не ссылались на одни и те же объекты.
+  const commitHistory = useCallback(() => {
+    dispatch(pushHistory(JSON.parse(JSON.stringify(blocks))));
+  }, [blocks, dispatch]);
+
   // АРХИТЕКТУРА СИНХРОНИЗАЦИИ: Главный синхронизатор Undo/Redo. 
   // Перебрасывает снимки истории из history.present обратно в блоки для отрисовки холста
   useEffect(() => {
@@ -181,13 +188,24 @@ export default function EditorPage() {
     }
   }, [clearProject, toast]);
 
+  // ВАЖНО: deleteBlock/duplicateBlock передаются без аргументов — иначе объект
+  // KeyboardEvent попал бы в параметр explicitIndex и удалился бы блок по «индексу» NaN/объекту.
+  const handleDeleteSelected = useCallback(() => {
+    blockActions.deleteBlock();
+  }, [blockActions]);
+
+  const handleDuplicateSelected = useCallback(() => {
+    blockActions.duplicateBlock();
+  }, [blockActions]);
+
   useHotkeys({
     onSave: handleSave,
-    onUndo: useCallback(() => undo(), [undo]),
-    onRedo: useCallback(() => redo(), [redo]),
-    onDelete: useCallback(() => blockActions.deleteBlock(), [blockActions]),
-    onPreview: useCallback(() => openPreview(), [openPreview]),
-    onDuplicate: useCallback(() => blockActions.duplicateBlock(), [blockActions]),
+    onUndo: undo,
+    onRedo: redo,
+    onDelete: handleDeleteSelected,
+    onPreview: openPreview,
+    onDuplicate: handleDuplicateSelected,
+    onEscape: closePreview,
   });
 
   const handleSelectTemplate = (template: Template) => {
@@ -266,7 +284,8 @@ export default function EditorPage() {
                   <EditPanel
                     block={selectedBlock || undefined}
                     onChange={blockActions.updateBlock}
-                    onDelete={blockActions.deleteBlock}
+                    onDelete={() => blockActions.deleteBlock()}
+                    onCommit={commitHistory}
                   />
                 </>
               ) : (

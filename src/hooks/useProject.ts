@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useBlocks } from "../store/hooks";
 import { setBlocks } from "../store/slices/blocksSlice";
 import { push as pushHistory } from "../store/slices/historySlice";
-import { loadFromLocalStorage, saveToLocalStorage } from "../utils/localStorage";
+import { loadFromLocalStorage, saveToLocalStorage, clearLocalStorage } from "../utils/localStorage";
 import type { BlockData } from "../type/blocks";
 
 /**
@@ -23,10 +23,14 @@ export function useProject() {
 
   // Автосохранение в localStorage с дебаунсом в 1 секунду при изменении блоков
   useEffect(() => {
-    if (blocks.length === 0) return;
-
+    // БАГ #AUTOSAVE: раньше пустой массив игнорировался (`if (blocks.length === 0) return`),
+    // из-за чего очистка проекта не сохранялась и после перезагрузки блоки «восстанавливались».
     const timer = setTimeout(() => {
-      saveToLocalStorage(blocks);
+      if (blocks.length === 0) {
+        clearLocalStorage();
+      } else {
+        saveToLocalStorage(blocks);
+      }
     }, 1000);
 
     // Очищаем таймер, если блоки изменились быстрее, чем за 1 секунду
@@ -34,17 +38,32 @@ export function useProject() {
   }, [blocks]);
 
   const saveProject = () => {
-    saveToLocalStorage(blocks);
+    if (blocks.length === 0) {
+      clearLocalStorage();
+    } else {
+      saveToLocalStorage(blocks);
+    }
   };
 
   const importProject = (newBlocks: BlockData[]) => {
-    dispatch(setBlocks(newBlocks));
-    dispatch(pushHistory(newBlocks));
+    // БАГ #IMPORT: нормализуем данные — импортированные/сохранённые блоки могут
+    // не иметь id или иметь некорректную структуру, что ломает React keys и dnd-kit.
+    const normalized: BlockData[] = newBlocks
+      .filter((b) => b && typeof b.type === "string" && typeof b.variant === "string")
+      .map((b) => ({
+        ...b,
+        id: b.id || Math.random().toString(36).substring(2, 9),
+        props: b.props ?? {},
+      }));
+    dispatch(setBlocks(normalized));
+    dispatch(pushHistory(normalized));
   };
 
   const clearProject = () => {
     dispatch(setBlocks([]));
     dispatch(pushHistory([]));
+    // Немедленно убираем сохранённый проект, не полагаясь на дебаунс автосохранения
+    clearLocalStorage();
   };
 
   return {

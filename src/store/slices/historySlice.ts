@@ -23,6 +23,14 @@ export const historySlice = createSlice({
       state.present = action.payload;
     },
     push: (state, action: PayloadAction<BlockData[]>) => {
+      // БАГ #HISTORY: защита от дублирующих снимков — если состав блоков не изменился
+      // (те же ссылки на те же объекты), толкать в историю пустой шаг бессмысленно:
+      // это создавало «фантомные» шаги undo, требующие двойного нажатия Ctrl+Z.
+      const isSameSnapshot =
+        state.present.length === action.payload.length &&
+        state.present.every((b, i) => b === action.payload[i]);
+      if (isSameSnapshot) return;
+
       state.past.push(state.present);
       state.present = action.payload;
       state.future = [];

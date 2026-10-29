@@ -7,6 +7,7 @@ interface UseHotkeysOptions {
   onDelete?: () => void;
   onPreview?: () => void;
   onDuplicate?: () => void;
+  onEscape?: () => void;
 }
 
 export function useHotkeys({
@@ -16,6 +17,7 @@ export function useHotkeys({
   onDelete,
   onPreview,
   onDuplicate,
+  onEscape,
 }: UseHotkeysOptions) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,6 +54,7 @@ export function useHotkeys({
 
       // Delete / Backspace - Удалить (если есть выделенный блок)
       if (e.key === "Delete" || e.key === "Backspace") {
+        e.preventDefault();
         onDelete?.();
       }
 
@@ -67,13 +70,13 @@ export function useHotkeys({
         onPreview?.();
       }
 
-      // Escape - Снять выделение
+      // Escape - Снять выделение / закрыть модальное окно
       if (e.key === "Escape") {
-        // Можно добавить callback для снятия выделения
+        onEscape?.();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onSave, onUndo, onRedo, onDelete, onPreview, onDuplicate]);
+  }, [onSave, onUndo, onRedo, onDelete, onPreview, onDuplicate, onEscape]);
 }

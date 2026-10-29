@@ -8,7 +8,7 @@ import {
 } from "../store/slices/blocksSlice";
 import { push as pushHistory } from "../store/slices/historySlice";
 import { useToast } from "../contexts/ToastProvider";
-import { moveArrayItem, duplicateArrayItem } from "../utils/helpers";
+import { moveArrayItem } from "../utils/helpers";
 import type { BlockData, BlockProps } from "../type/blocks";
 
 interface UseBlockActionsOptions {
@@ -42,10 +42,18 @@ export function useBlockActions({ blocks, selectedIndex }: UseBlockActionsOption
       return false;
     }
     
+    // БАГ #DUPLICATE: снимок истории строится ГЛУБОКОЙ копией с новым id.
+    // Раньше duplicateArrayItem вставлял ту же ссылку на объект, что и оригинал,
+    // из-за чего история Undo содержала «призрачный» дубликат без нового id,
+    // а undo после дублирования восстанавливал состояние со shared reference.
+    const source = blocks[selectedIndex];
+    const clone = {
+      ...JSON.parse(JSON.stringify(source)),
+      id: Math.random().toString(36).substring(2, 9),
+    };
+    const nextBlocks = [...blocks.slice(0, selectedIndex + 1), clone, ...blocks.slice(selectedIndex + 1)];
+
     dispatch(duplicateBlockAction(selectedIndex));
-    
-    // АРХИТЕКТУРА #2: Теперь дублирование корректно записывается в историю Undo/Redo
-    const nextBlocks = duplicateArrayItem(blocks, selectedIndex);
     dispatch(pushHistory(nextBlocks));
     
     toast.success("Блок продублирован");

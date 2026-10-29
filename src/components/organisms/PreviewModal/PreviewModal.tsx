@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import type { BlockData } from "../../../type/blocks";
 import { blockMap } from "../../../utils/blockMap";
 import styles from "./PreviewModal.module.css";
@@ -14,6 +14,16 @@ export default memo(function PreviewModal({
   onClose,
   blocks,
 }: PreviewModalProps) {
+  // Закрытие модалки по Escape (в т.ч. из input внутри — это ожидаемое поведение модалок)
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -47,13 +57,10 @@ export default memo(function PreviewModal({
 
                   const props = block.props || {};
                   return (
-                    <div key={i} className={styles.previewBlock}>
-                      <Component
-                        title={props.title}
-                        description={props.description}
-                        backgroundImage={props.backgroundImage}
-                        buttonText={props.buttonText}
-                      />
+                    <div key={block.id || i} className={styles.previewBlock}>
+                      {/* БАГ #PREVIEW: раньше пробрасывались только 4 фиксированных пропа —
+                          все остальные поля (фичи прайсинга, ссылки футера и т.д.) терялись */}
+                      <Component {...props} />
                     </div>
                   );
                 })}

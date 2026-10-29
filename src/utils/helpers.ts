@@ -67,6 +67,7 @@ export function duplicateArrayItem<T>(array: T[], index: number): T[] {
  * @param wait Время ожидания в мс
  * @returns Debounced функция
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -84,6 +85,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * @param limit Лимит в мс
  * @returns Throttled функция
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number

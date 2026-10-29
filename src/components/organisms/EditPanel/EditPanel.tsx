@@ -1,26 +1,33 @@
 import styles from "./EditPanel.module.css";
 import type { BlockData, BlockProps } from "../../../type/blocks";
 import { blockMap } from "../../../utils/blockMap";
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 
 interface EditPanelProps {
   block?: BlockData;
   onChange: (updated: BlockProps) => void;
   onDelete: () => void;
+  /** Вызывается при завершении редактирования поля — для фиксации снимка в истории Undo/Redo */
+  onCommit?: () => void;
 }
 
-export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelProps) {
+export default memo(function EditPanel({ block, onChange, onDelete, onCommit }: EditPanelProps) {
   // Локальный стейт для изоляции ввода текста от ререндера Canvas
   const [localProps, setLocalProps] = useState<Record<string, string>>({});
 
+  // Флаг активного ввода: пока фокус в поле панели, игнорируем внешнюю синхронизацию,
+  // иначе частичный commit из onBlur перезапишет незавершённый локальный ввод.
+  const isEditingRef = useRef(false);
+
   // Синхронизируем локальный стейт только при смене выбранного блока или его внешних пропсов
   useEffect(() => {
+    if (isEditingRef.current) return;
     if (block?.props) {
       setLocalProps(block.props as Record<string, string>);
     } else {
       setLocalProps({});
     }
-  }, [block?.variant, block?.props]);
+  }, [block?.id, block?.variant, block?.props]);
 
   if (!block) {
     return (
@@ -70,6 +77,17 @@ export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelP
   // Пушим данные в глобальный Redux только при потере фокуса (onBlur)
   const handlePushToStore = (fieldName: string) => {
     onChange({ [fieldName]: localProps[fieldName] });
+    // Фиксируем итоговый снимок в истории Undo/Redo после применения коммита в сторе
+    requestAnimationFrame(() => onCommit?.());
+  };
+
+  const handleFocusStart = () => {
+    isEditingRef.current = true;
+  };
+
+  const handleBlurEnd = (fieldName: string) => {
+    isEditingRef.current = false;
+    handlePushToStore(fieldName);
   };
 
   return (
@@ -97,7 +115,8 @@ export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelP
                       type={field.type}
                       value={localProps[fieldName] || ""}
                       onChange={(e) => handleLocalChange(fieldName, e.target.value)}
-                      onBlur={() => handlePushToStore(fieldName)}
+                      onFocus={handleFocusStart}
+                      onBlur={() => handleBlurEnd(fieldName)}
                       placeholder={`Введите ${field.label.toLowerCase()}`}
                     />
                   ) : field.type === "textarea" ? (
@@ -105,7 +124,8 @@ export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelP
                       className={`${styles.fieldInput} ${styles.textarea}`}
                       value={localProps[fieldName] || ""}
                       onChange={(e) => handleLocalChange(fieldName, e.target.value)}
-                      onBlur={() => handlePushToStore(fieldName)}
+                      onFocus={handleFocusStart}
+                      onBlur={() => handleBlurEnd(fieldName)}
                       placeholder={`Введите ${field.label.toLowerCase()}`}
                       rows={4}
                     />
@@ -115,7 +135,8 @@ export default memo(function EditPanel({ block, onChange, onDelete }: EditPanelP
             })}
 
             <div className={styles.deleteSection}>
-              <button className={styles.deleteButton} onClick={onDelete}>
+              {/* Передаём стрелочную функцию: иначе onClick отдаст MouseEvent как explicitIndex */}
+              <button className={styles.deleteButton} onClick={() => onDelete()}>
                 <span>🗑️</span>
                 <span>Удалить блок</span>
               </button>
