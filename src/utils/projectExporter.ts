@@ -1,6 +1,18 @@
-import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import type { BlockData } from "../type/blocks";
+
+// Нативная замена file-saver: скачивание через временный <a download>
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  // Даём браузеру начать загрузку перед освобождением URL
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 // БАГ #XSS: экранируем пользовательский текст перед вставкой в HTML-экспорт.
 // Без этого `<script>` или `"><img onerror=...>` в полях блока выполняются в экспортированной странице.
@@ -44,7 +56,7 @@ export function exportProject(
   const blob = new Blob([JSON.stringify(project, null, 2)], {
     type: "application/json",
   });
-  saveAs(blob, `${projectName}-project.json`);
+  downloadBlob(blob, `${projectName}-project.json`);
 }
 
 export async function importProject(file: File): Promise<ProjectData> {
@@ -91,7 +103,7 @@ export async function exportProjectAsZip(
   zip.file("LandingPage.tsx", reactContent);
 
   const content = await zip.generateAsync({ type: "blob" });
-  saveAs(content, `${projectName}.zip`);
+  downloadBlob(content, `${projectName}.zip`);
 }
 
 function generateHtmlFromBlocks(blocks: BlockData[]): string {

@@ -3,7 +3,7 @@ import type { BlockData } from "../../type/blocks";
 
 const MAX_HISTORY = 50;
 
-interface HistoryState {
+export interface HistoryState {
   past: BlockData[][];
   present: BlockData[];
   future: BlockData[][];
@@ -23,13 +23,14 @@ export const historySlice = createSlice({
       state.present = action.payload;
     },
     push: (state, action: PayloadAction<BlockData[]>) => {
-      // БАГ #HISTORY: защита от дублирующих снимков — если состав блоков не изменился
-      // (те же ссылки на те же объекты), толкать в историю пустой шаг бессмысленно:
-      // это создавало «фантомные» шаги undo, требующие двойного нажатия Ctrl+Z.
-      const isSameSnapshot =
+      // БАГ #HISTORY: защита от дублирующих снимков. Раньше сравнивались ССЫЛКИ на объекты,
+      // но listenerMiddleware всегда кладёт в историю ГЛУБОКУЮ копию (JSON.parse/stringify),
+      // поэтому ссылки никогда не совпадали и каждый набор клавиш давал «фантомный» шаг undo.
+      // Теперь сравниваем содержимое снимков (id + props + variant).
+      const sameContent =
         state.present.length === action.payload.length &&
-        state.present.every((b, i) => b === action.payload[i]);
-      if (isSameSnapshot) return;
+        JSON.stringify(state.present) === JSON.stringify(action.payload);
+      if (sameContent) return;
 
       state.past.push(state.present);
       state.present = action.payload;
