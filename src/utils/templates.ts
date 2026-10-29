@@ -22,7 +22,7 @@ export const templates: Template[] = [
         title: "Инновационное решение для вашего бизнеса",
         description: "Мы создаем технологии будущего уже сегодня",
         buttonText: "Попробовать бесплатно",
-        backgroundImage: "https://picsum.photos/800/600",
+        backgroundImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23667eea'/%3E%3Cstop offset='1' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ctext x='400' y='310' font-family='sans-serif' font-size='28' fill='white' fill-opacity='0.5' text-anchor='middle'%3EImage Placeholder%3C/text%3E%3C/svg%3E",
       }},
       { id: generateId(), type: "feature", variant: "feature-2", props: {
         title: "Наши преимущества",
@@ -174,7 +174,7 @@ export const templates: Template[] = [
         title: "Новый iPhone 16 Pro",
         description: "Технологии будущего в ваших руках",
         buttonText: "Предзаказ",
-        backgroundImage: "https://picsum.photos/1920/1080",
+        backgroundImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23667eea'/%3E%3Cstop offset='1' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23g)'/%3E%3Ctext x='960' y='555' font-family='sans-serif' font-size='28' fill='white' fill-opacity='0.5' text-anchor='middle'%3EImage Placeholder%3C/text%3E%3C/svg%3E",
       }},
       { id: generateId(), type: "feature", variant: "feature-2", props: {
         title: "Особенности",

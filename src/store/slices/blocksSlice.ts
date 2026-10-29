@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { BlockData } from "../../type/blocks";
 import { generateId } from "../../utils/helpers";
 
-interface BlocksState {
+export interface BlocksState {
   items: BlockData[];
   // #1: selectedBlockId хранит СТАБИЛЬНЫЙ id блока, а не индекс.
   // Индекс — производная величина: любое удаление/перемещение рассинхронизировало
